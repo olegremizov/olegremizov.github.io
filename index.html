@@ -108,43 +108,96 @@
 
     .sky-plane {
       --top: 18%;
-      --duration: 48s;
+      --duration: 56s;
       --delay: 0s;
-      --angle: -8deg;
-      --drift: 30vh;
+      --angle: -6deg;
+      --drift: 14vh;
       position: absolute;
       top: var(--top);
-      left: -260px;
-      width: 250px;
-      height: 34px;
+      width: min(760px, 78vw);
+      height: 74px;
       opacity: 0;
-      transform: translate3d(-30vw, 0, 0) rotate(var(--angle));
-      animation: plane-cross var(--duration) linear infinite;
+      animation-duration: var(--duration);
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
       animation-delay: var(--delay);
     }
 
-    .sky-plane::before {
-      content: "";
+    .sky-plane-east {
+      left: -820px;
+      animation-name: plane-cross-east;
+    }
+
+    .sky-plane-west {
+      left: calc(100% + 60px);
+      animation-name: plane-cross-west;
+    }
+
+    .aircraft {
       position: absolute;
       right: 0;
       top: 50%;
-      width: 34px;
-      height: 12px;
-      background: rgba(18, 53, 78, 0.38);
-      clip-path: polygon(0 38%, 58% 38%, 76% 0, 100% 50%, 76% 100%, 58% 62%, 0 62%, 14% 50%);
+      width: 94px;
+      height: 48px;
       transform: translateY(-50%);
+      filter: drop-shadow(0 4px 8px rgba(13, 63, 102, 0.14));
+    }
+
+    .aircraft::before,
+    .wing,
+    .tail {
+      content: "";
+      position: absolute;
+      display: block;
+      background: rgba(18, 53, 78, 0.42);
+    }
+
+    .aircraft::before {
+      top: 20px;
+      left: 6px;
+      width: 84px;
+      height: 9px;
+      border-radius: 999px;
+      clip-path: polygon(0 50%, 18% 14%, 78% 14%, 100% 50%, 78% 86%, 18% 86%);
+    }
+
+    .wing {
+      top: 1px;
+      left: 38px;
+      width: 34px;
+      height: 46px;
+      clip-path: polygon(18% 49%, 66% 0, 100% 0, 72% 49%, 100% 100%, 66% 100%);
+    }
+
+    .tail {
+      top: 13px;
+      left: 6px;
+      width: 24px;
+      height: 24px;
+      clip-path: polygon(0 0, 100% 40%, 100% 60%, 0 100%, 28% 50%);
+    }
+
+    .sky-plane-west .aircraft {
+      right: auto;
+      left: 0;
+      transform: translateY(-50%) scaleX(-1);
     }
 
     .contrail {
       position: absolute;
-      right: 31px;
+      right: 78px;
       top: 50%;
-      width: 220px;
-      height: 18px;
+      width: min(680px, 68vw);
+      height: 34px;
       transform: translateY(-50%);
       opacity: 0;
       animation: trail-dissolve var(--duration) ease-in-out infinite;
       animation-delay: var(--delay);
+    }
+
+    .sky-plane-west .contrail {
+      right: auto;
+      left: 78px;
     }
 
     .contrail::before,
@@ -153,41 +206,33 @@
       position: absolute;
       right: 0;
       width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.46) 42%, rgba(255, 255, 255, 0.92) 100%);
-      filter: blur(1.5px);
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.34) 36%, rgba(255, 255, 255, 0.94) 100%);
+      filter: blur(2px);
     }
 
     .contrail::before {
-      top: 6px;
-    }
-
-    .contrail::after {
       top: 11px;
     }
 
-    .sky-plane:nth-child(1) {
-      --top: 14%;
-      --duration: 46s;
-      --delay: -16s;
-      --angle: -7deg;
-      --drift: 18vh;
+    .contrail::after {
+      top: 19px;
     }
 
-    .sky-plane:nth-child(2) {
-      --top: 34%;
-      --duration: 62s;
-      --delay: 18s;
-      --angle: -4deg;
-      --drift: 8vh;
+    .sky-plane-east {
+      --top: 18%;
+      --duration: 54s;
+      --delay: -20s;
+      --angle: -6deg;
+      --drift: 16vh;
     }
 
-    .sky-plane:nth-child(3) {
-      --top: 58%;
-      --duration: 72s;
-      --delay: 34s;
-      --angle: -10deg;
-      --drift: 24vh;
+    .sky-plane-west {
+      --top: 54%;
+      --duration: 68s;
+      --delay: -34s;
+      --angle: 7deg;
+      --drift: -12vh;
     }
 
     main {
@@ -379,10 +424,10 @@
       margin-top: 12px;
     }
 
-    @keyframes plane-cross {
+    @keyframes plane-cross-east {
       0% {
         opacity: 0;
-        transform: translate3d(-30vw, 0, 0) rotate(var(--angle));
+        transform: translate3d(-12vw, 0, 0) rotate(var(--angle));
       }
 
       10%,
@@ -392,7 +437,24 @@
 
       100% {
         opacity: 0;
-        transform: translate3d(130vw, var(--drift), 0) rotate(var(--angle));
+        transform: translate3d(calc(100vw + 900px), var(--drift), 0) rotate(var(--angle));
+      }
+    }
+
+    @keyframes plane-cross-west {
+      0% {
+        opacity: 0;
+        transform: translate3d(12vw, 0, 0) rotate(var(--angle));
+      }
+
+      10%,
+      68% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate3d(calc(-100vw - 900px), var(--drift), 0) rotate(var(--angle));
       }
     }
 
@@ -462,9 +524,14 @@
 </head>
 <body>
   <div class="sky-scene" aria-hidden="true">
-    <span class="sky-plane"><span class="contrail"></span></span>
-    <span class="sky-plane"><span class="contrail"></span></span>
-    <span class="sky-plane"><span class="contrail"></span></span>
+    <span class="sky-plane sky-plane-east">
+      <span class="contrail"></span>
+      <span class="aircraft"><span class="wing"></span><span class="tail"></span></span>
+    </span>
+    <span class="sky-plane sky-plane-west">
+      <span class="contrail"></span>
+      <span class="aircraft"><span class="wing"></span><span class="tail"></span></span>
+    </span>
   </div>
 
   <main>
@@ -499,9 +566,6 @@
         <p>
           This GitHub Pages profile is a compact supporting identity page for Oleg Remizov.
           The main site remains <a href="https://www.remizov.com/">remizov.com</a>.
-        </p>
-        <p class="note">
-          The page connects the English and Russian spelling of the name with the official public profiles below.
         </p>
       </div>
     </section>
