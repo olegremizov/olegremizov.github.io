@@ -69,7 +69,8 @@
       --warm: #c47a28;
       --paper: #ffffff;
       --soft: #f5f7f8;
-      --sky: #eef7fb;
+      --sky: #dff4ff;
+      --sky-deep: #bfe5f8;
     }
 
     * {
@@ -77,16 +78,121 @@
     }
 
     body {
+      min-height: 100vh;
       margin: 0;
+      overflow-x: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       line-height: 1.6;
       color: var(--text);
       background:
-        linear-gradient(180deg, var(--sky) 0, var(--paper) 340px),
+        linear-gradient(180deg, var(--sky-deep) 0, var(--sky) 42%, var(--paper) 100%),
         var(--paper);
     }
 
+    .sky-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .sky-scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.62)),
+        repeating-linear-gradient(105deg, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 86px);
+    }
+
+    .sky-plane {
+      --top: 18%;
+      --duration: 48s;
+      --delay: 0s;
+      --angle: -8deg;
+      --drift: 30vh;
+      position: absolute;
+      top: var(--top);
+      left: -260px;
+      width: 250px;
+      height: 34px;
+      opacity: 0;
+      transform: translate3d(-30vw, 0, 0) rotate(var(--angle));
+      animation: plane-cross var(--duration) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .sky-plane::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 34px;
+      height: 12px;
+      background: rgba(18, 53, 78, 0.38);
+      clip-path: polygon(0 38%, 58% 38%, 76% 0, 100% 50%, 76% 100%, 58% 62%, 0 62%, 14% 50%);
+      transform: translateY(-50%);
+    }
+
+    .contrail {
+      position: absolute;
+      right: 31px;
+      top: 50%;
+      width: 220px;
+      height: 18px;
+      transform: translateY(-50%);
+      opacity: 0;
+      animation: trail-dissolve var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .contrail::before,
+    .contrail::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.46) 42%, rgba(255, 255, 255, 0.92) 100%);
+      filter: blur(1.5px);
+    }
+
+    .contrail::before {
+      top: 6px;
+    }
+
+    .contrail::after {
+      top: 11px;
+    }
+
+    .sky-plane:nth-child(1) {
+      --top: 14%;
+      --duration: 46s;
+      --delay: -16s;
+      --angle: -7deg;
+      --drift: 18vh;
+    }
+
+    .sky-plane:nth-child(2) {
+      --top: 34%;
+      --duration: 62s;
+      --delay: 18s;
+      --angle: -4deg;
+      --drift: 8vh;
+    }
+
+    .sky-plane:nth-child(3) {
+      --top: 58%;
+      --duration: 72s;
+      --delay: 34s;
+      --angle: -10deg;
+      --drift: 24vh;
+    }
+
     main {
+      position: relative;
+      z-index: 1;
       width: min(920px, calc(100% - 40px));
       margin: 0 auto;
       padding: 56px 0 44px;
@@ -111,13 +217,6 @@
       height: 3px;
       background: linear-gradient(90deg, var(--accent-dark), var(--warm));
       border-radius: 999px;
-    }
-
-    .eyebrow {
-      margin: 0 0 14px;
-      color: var(--accent-dark);
-      font-size: 0.95rem;
-      font-weight: 650;
     }
 
     h1,
@@ -280,10 +379,50 @@
       margin-top: 12px;
     }
 
-    footer {
-      padding-top: 22px;
-      color: var(--muted);
-      font-size: 0.94rem;
+    @keyframes plane-cross {
+      0% {
+        opacity: 0;
+        transform: translate3d(-30vw, 0, 0) rotate(var(--angle));
+      }
+
+      10%,
+      68% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate3d(130vw, var(--drift), 0) rotate(var(--angle));
+      }
+    }
+
+    @keyframes trail-dissolve {
+      0%,
+      8% {
+        opacity: 0;
+        filter: blur(0);
+      }
+
+      20% {
+        opacity: 0.92;
+        filter: blur(1px);
+      }
+
+      62% {
+        opacity: 0.58;
+        filter: blur(3px);
+      }
+
+      100% {
+        opacity: 0;
+        filter: blur(8px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sky-plane {
+        display: none;
+      }
     }
 
     @media (max-width: 720px) {
@@ -322,10 +461,15 @@
   </style>
 </head>
 <body>
+  <div class="sky-scene" aria-hidden="true">
+    <span class="sky-plane"><span class="contrail"></span></span>
+    <span class="sky-plane"><span class="contrail"></span></span>
+    <span class="sky-plane"><span class="contrail"></span></span>
+  </div>
+
   <main>
     <header>
       <div class="hero-copy">
-        <p class="eyebrow">Public profile for search, identity and official links</p>
         <h1>Oleg Remizov / Олег Ремизов</h1>
         <p class="intro">
           Oleg Remizov is an aviation blogger, civil aviation content creator and founder of
@@ -407,7 +551,7 @@
         <li><a href="https://t.me/remizovcom">Telegram</a></li>
         <li><a href="https://vk.com/olegremizov">VK</a></li>
         <li><a href="https://rutube.ru/channel/23503861">RuTube</a></li>
-        <li><a href="https://www.linkedin.com/in/oremizov/">LinkedIn</a></li>
+        <li><a href="https://www.linkedin.com/in/olegremizov/">LinkedIn</a></li>
         <li><a href="https://www.instagram.com/olegremizov/">Instagram</a></li>
         <li><a href="https://github.com/olegremizov">GitHub</a></li>
       </ul>
@@ -433,9 +577,6 @@
       </p>
     </section>
 
-    <footer>
-      This page is maintained as a lightweight public profile for Oleg Remizov.
-    </footer>
   </main>
 </body>
 </html>
